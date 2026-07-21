@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>اضافة خدمة طبية - قطاع غزة</title>
+  <link rel="icon" type="image/png" href="Img/Logo.webp">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="css/fontawesome.min.css">
+  <link rel="stylesheet" href="css/solid.min.css">
+
+  <!-- CSS الخاص بالفورم -->
+  <link rel="stylesheet" href="form-style.css"/>
+</head>
+
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="form-header">
+    <div class="form-header-title">
+      <i class="fa-solid fa-heart-circle-plus"></i>
+      اضافة خدمة طبية جديدة — قطاع غزة
+    </div>
+    <a href="index.html" class="back-link">
+      <i class="fa-solid fa-arrow-left"></i>
+      العودة للخريطة
+    </a>
+  </header>
+
+  <!-- ===== MAIN ===== -->
+  <main class="form-main">
+    <div class="form-card">
+
+      <!-- شريط التقدم -->
+      <div class="progress-bar-wrap">
+
+        <div class="steps-row">
+
+          <div class="step-item active" id="step-item-1">
+            <div class="step-circle">1</div>
+            <span class="step-label">المعلومات</span>
+          </div>
+
+          <div class="step-divider"></div>
+
+          <div class="step-item" id="step-item-2">
+            <div class="step-circle">2</div>
+            <span class="step-label">التفاصيل</span>
+          </div>
+
+          <div class="step-divider"></div>
+
+          <div class="step-item" id="step-item-3">
+            <div class="step-circle">3</div>
+            <span class="step-label">الموقع</span>
+          </div>
+
+          <div class="step-divider"></div>
+
+          <div class="step-item" id="step-item-4">
+            <div class="step-circle">4</div>
+            <span class="step-label">المراجعة</span>
+          </div>
+
+       
+        
+        </div>
+    
+      </div> 
+
+      <!-- ===== الخطوة 1: المعلومات الأساسية ===== -->
+      <div class="step-content active" id="step-1">
+        <h2 class="step-title">المعلومات الأساسية</h2>
+        <p class="step-sub">أدخل بيانات الخدمة الطبية</p>
+
+        <div class="field-group">
+          <label>اسم الخدمة <span class="req">*</span></label>
+          <input type="text" id="f-name" placeholder="مستشفى القدس ..."/>
+          <span class="field-error" id="err-name">يرجى إدخال اسم الخدمة</span>
+        </div>
+
+        <div class="two-col">
+          <div class="field-group">
+            <label>النوع <span class="req">*</span></label>
+            <select id="f-type">
+              <option value="">اختر النوع</option>
+              <option>مستشفى رئيسي</option>
+              <option>مستشفى ميداني</option>
+              <option>نقطة طبية</option>
+            </select>
+            <span class="field-error" id="err-type">يرجى اختيار النوع</span>
+          </div>
+
+          <div class="field-group">
+            <label>المنطقة <span class="req">*</span></label>
+            <select id="f-area">
+              <option value="">اختر المنطقة</option>
+              <option>شمال غزة</option>
+              <option>غزة</option>
+              <option>الوسطى</option>
+              <option>خانيونس</option>
+              <option>رفح</option>
+            </select>
+            <span class="field-error" id="err-area">يرجى اختيار المنطقة</span>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>حالة الخدمة <span class="req">*</span></label>
+          <select id="f-status">
+            <option value="">اختر الحالة</option>
+            <option>تعمل بشكل كامل</option>
+            <option>تعمل جزئياً</option>
+            <option>مغلقة</option>
+          </select>
+          <span class="field-error" id="err-status">يرجى اختيار الحالة</span>
+        </div>
+      </div>
+
+      <!-- ===== الخطوة 2: التفاصيل ===== -->
+      <div class="step-content" id="step-2">
+        <h2 class="step-title">التفاصيل الإضافية</h2>
+        <p class="step-sub">معلومات تكميلية عن الخدمة</p>
+
+        <div class="field-group">
+          <label>الجهة المشغلة <span class="req">*</span></label>
+          <select id="f-operator">
+            <option value="">اختر الجهة</option>
+            <option>وزارة الصحة</option>
+            <option>وكالة الغوث (أونروا)</option>
+            <option>منظمة دولية</option>
+            <option>قطاع خاص</option>
+          </select>
+          <span class="field-error" id="err-operator">يرجى اختيار الجهة المشغلة</span>
+        </div>
+
+        <div class="field-group">
+          <label>صورة الخدمة <span class="optional">(اختياري)</span></label>
+          <div class="file-upload-box" id="upload-box">
+            <i class="fa-solid fa-image"></i>
+            <p>انقر لاختيار صورة</p>
+            <p class="file-hint">PNG, JPG — حتى 5MB</p>
+            <input type="file" id="f-image" accept="image/*"/>
+          </div>
+          <div class="file-preview" id="file-preview">
+            <img id="preview-img" src="" alt="معاينة"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== الخطوة 3: الموقع ===== -->
+      <div class="step-content" id="step-3">
+        <h2 class="step-title">تحديد الموقع</h2>
+        <p class="step-sub">انقر داخل حدود قطاع غزة لتحديد موقع الخدمة</p>
+
+        <div class="map-hint">
+          <i class="fa-solid fa-circle-info"></i>
+          انقر على الخريطة لتحديد الموقع — سيتم رفض أي نقطة خارج حدود قطاع غزة
+        </div>
+
+        <div id="form-map"></div>
+
+        <div class="coords-box" id="coords-box">
+          لم يتم تحديد موقع بعد
+        </div>
+        <span class="field-error" id="err-location">يرجى تحديد موقع على الخريطة</span>
+      </div>
+
+      <!-- ===== الخطوة 4: المراجعة ===== -->
+      <div class="step-content" id="step-4">
+        <h2 class="step-title">مراجعة وإرسال</h2>
+        <p class="step-sub">تأكد من صحة البيانات قبل الإرسال</p>
+
+        <div class="review-grid">
+          <div class="review-item">
+            <span class="review-label">اسم الخدمة</span>
+            <span class="review-value" id="rv-name">—</span>
+          </div>
+          <div class="review-item">
+            <span class="review-label">النوع</span>
+            <span class="review-value" id="rv-type">—</span>
+          </div>
+          <div class="review-item">
+            <span class="review-label">المنطقة</span>
+            <span class="review-value" id="rv-area">—</span>
+          </div>
+          <div class="review-item">
+            <span class="review-label">الحالة</span>
+            <span class="review-value" id="rv-status">—</span>
+          </div>
+          <div class="review-item full">
+            <span class="review-label">الجهة المشغلة</span>
+            <span class="review-value" id="rv-operator">—</span>
+          </div>
+          <div class="review-item full">
+            <span class="review-label">الموقع</span>
+            <span class="review-value" id="rv-coords">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== أزرار التنقل ===== -->
+      <div class="form-nav" id="form-nav">
+        <button class="btn btn-prev" id="btn-prev">
+          <i class="fa-solid fa-arrow-right"></i> السابق
+        </button>
+        <button class="btn btn-next" id="btn-next">
+          التالي <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <button class="btn btn-submit" id="btn-submit" style="display:none">
+          <i class="fa-solid fa-paper-plane fa-xs"></i> إرسال المعلومات
+        </button>
+      </div>
+
+      <!-- شاشة النجاح -->
+      <div class="success-screen" id="success-screen">
+        <div class="success-icon-big">✓</div>
+        <h2>تم إرسال الخدمة بنجاح!</h2>
+        <p>شكراً لمساهمتك، سيتم مراجعة الخدمة<br/>وإضافتها للخريطة بعد التحقق منها.</p>
+        <a href="index.html" class="btn-return">العودة للخريطة</a>
+      </div>
+
+    </div>
+  </main>
+     
+
+  <!-- Toast -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="subapasConfig.js" defer></script>
+  <script src="form-script.js" defer></script>
+
+</body>
+</html>

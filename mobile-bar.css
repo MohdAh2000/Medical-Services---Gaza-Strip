@@ -1,0 +1,168 @@
+/* ===================================
+   MOBILE BAR — يظهر فقط على الموبايل
+   =================================== */
+
+/* إخفاء شريط الموبايل على الديسكتوب */
+#mobile-bar {   
+  display: none;
+}
+
+/* اعدل هذه القيمة  */
+@media (max-width: 799px) {
+
+  /* ===== إخفاء عناصر الديسكتوب ===== */
+  .tabs-row    { display: none !important; }
+  #coordinates-display { display: none; }
+
+
+  /* ===== الخريطة ===== */
+  #map { height: calc(100vh - 75px); }
+
+  /* ===== شريط الموبايل ===== */
+  #mobile-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    left: 50px; /* مساحة لأزرار Leaflet */
+    z-index: 2000;
+    flex-wrap: wrap;
+  }
+
+  /* ===== أزرار الشريط ===== */
+  .mob-btn {
+    width: 35px;
+    height: 35px;
+    border-radius: 40px;
+    border: none;
+    background: #0F2854;
+    color: #fff;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    text-decoration: none;
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+
+  .mob-btn:hover   { background: #0d2244; }
+  .mob-btn:visited { color: #fff; }
+
+  .mob-btn i { color: #fff; font-size: 0.95rem; }
+
+  /* ===== حقل البحث ===== */
+  .mob-search-box {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-top: 6px;
+    gap: 0;
+    position: relative;
+    animation: slideDown 0.25s ease;
+  }
+
+  .mob-search-box.hidden { display: none; }
+
+  #mob-search-input {
+    flex: 1;
+    padding: 10px 12px;
+    border: none;
+    border-radius: 0 10px 10px 0;
+    font-family: "IBM Plex Sans Arabic", sans-serif;
+    font-size: 0.68rem;
+    outline: none;
+    color: #222;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+
+  #mob-search-go {
+    width: 32px;
+    height: 37px;
+    border: none;
+    background: #a00e0e;
+    color: #fff;
+    border-radius: 10px 0 0 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+
+  #mob-search-go i { color: #fff; }
+  #mob-search-go:hover { background: #850b0b; }
+
+  #mob-search-suggestions {
+    top: calc(100% + 4px);
+    right: 0;
+    left: 0;
+    z-index: 4000;
+    max-height: 220px;
+  }
+
+  /* ===== panel الفلتر ===== */
+  .mob-filter-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    margin-top: 6px;
+    animation: slideDown 0.25s ease;
+  }
+
+  .mob-filter-panel.hidden { display: none; }
+
+  .mob-select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: none;
+    background: #0F2854;
+    color: #fff;
+    font-family: "IBM Plex Sans Arabic", sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: left 8px center;
+    padding-left: 30px;
+  }
+
+  /* الزر النشط */
+  .mob-btn.active {
+    background: #a00e0e;
+  }
+
+  /* ===== الـ Drawer على الموبايل ===== */
+  .drawer {
+    width: 100%;
+    right: -100%;
+  }
+
+  /* ===== Toast على الموبايل ===== */
+  .toast {
+    bottom: 80px; /* رفع التوست عن الأسفل ليكون فوق شريط الموبايل */
+  }
+
+  /* ===== أنيميشن ===== */
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+}

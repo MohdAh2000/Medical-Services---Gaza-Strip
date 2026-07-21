@@ -1,0 +1,223 @@
+/* ===== DRAWER ===== */
+.drawer {
+  position: absolute;
+  top: 0;
+  right: -320px; /* مخفي افتراضياً */
+  width: 320px;
+  height: 100%;
+  background: #fff;
+  z-index: 1500;
+  box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+  transition: right 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* الـ Drawer مفتوح */
+.drawer.open {
+  right: 0;
+}
+
+/* ===== زر الإغلاق ===== */
+.drawer-close {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.35);
+  color: #f10909;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: background 0.2s;
+}
+
+.drawer-close:hover {
+  background: rgba(255, 254, 254, 0.6);
+}
+
+/* ===== الصورة ===== */
+.drawer-img-wrap {
+  width: 100%;
+  height: 180px;
+  position: relative;
+  flex-shrink: 0;
+  background: #f0f2f5;
+}
+
+.drawer-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none; /* تظهر فقط إذا كانت هناك صورة */
+}
+
+.drawer-img-wrap img.visible {
+  display: block;
+}
+
+/* Placeholder إذا لا توجد صورة */
+.drawer-img-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #a00e0e 5%, #0F2854 100%);
+}
+
+.drawer-img-placeholder i {
+  font-size: 3.5rem;
+  color: rgba(255,255,255,0.25);
+}
+
+.drawer-img-placeholder.hidden {
+  display: none ;
+}
+
+/* ===== جسم الـ Drawer ===== */
+.drawer-body {
+  padding: 20px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  flex: 1;
+  
+}
+
+/* اسم الخدمة */
+.drawer-name {
+  font-family: "IBM Plex Sans Arabic", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0F2854;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* صف تفاصيل */
+.drawer-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size:1rem;
+  color: #000000;
+}
+
+.drawer-row i {
+  color: #272727;
+  width: 16px;
+  flex-shrink: 0;
+  font-size: 0.86rem;
+}
+
+/* حالة الخدمة — لون حسب الحالة */
+.drawer-status {
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 5px;
+  font-size: 0.86rem;
+}
+
+.drawer-status.active {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.drawer-status.partial {
+  background: #fff8e1;
+  color: #7a6000;
+}
+
+.drawer-status.closed {
+  background: #fdecea;
+  color: #c62828;
+}
+
+/* فاصل */
+.drawer-divider {
+  height: 1px;
+  background: #f0f0f0;
+  margin: 4px 0;
+}
+
+/* ===== أزرار الإجراءات ===== */
+.drawer-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.drawer-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 8px;
+  font-family: "IBM Plex Sans Arabic", "Zain", sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s;
+  border: none;
+}
+
+/* زر نسخ الإحداثيات */
+#drawer-coords-btn {
+  background: #f0f2f5;
+  color: #0F2854;
+}
+
+#drawer-coords-btn:hover {
+  background: #e2e6ed;
+}
+
+/* زر فتح في الخرائط */
+#drawer-maps-btn {
+  background: #0F2854;
+  color: #fff;
+}
+
+#drawer-maps-btn:hover {
+  background: #0d2244;
+}
+
+#drawer-maps-btn i { color: #fff; }
+
+@media (max-width: 768px) {
+  .drawer {
+    width: min(100vw, 320px);
+  }
+
+  .drawer-img {
+    height: 160px;
+  }
+
+  .drawer-body {
+    padding: 16px 16px 20px;
+    gap: 8px;
+  }
+
+  .drawer-name {
+    font-size: 1rem;
+  }
+
+  .drawer-row {
+    font-size: 0.95rem;
+  }
+
+  .drawer-action-btn {
+    padding: 9px 10px;
+    font-size: 0.84rem;
+  }
+}

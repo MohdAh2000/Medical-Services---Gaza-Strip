@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="موقع بسيط لعرض الخدمات والمرافق الطبية المتواجدة في قطاع غزة">
+  <title>المرافق الطبية - قطاع غزة</title>
+  <link rel="icon" type="image/png" href="Img/Logo.webp"> 
+ 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&family=Zain:wght@200;300;400;700;800;900&display=swap" rel="stylesheet">
+   
+  <!-- CSS files -->  
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="drawer.css" />
+  <link rel="stylesheet" href="mobile-bar.css"/>
+
+  <!-- font awesome -->
+   <link rel="stylesheet" href="css/fontawesome.min.css">
+   <link rel="stylesheet" href="css/brands.min.css">
+   <link rel="stylesheet" href="css/solid.min.css">
+
+
+  <!-- Leaflet CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate-src.js"></script>
+
+  <!-- Turf.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Heat Map-->
+  <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+
+  <!-- Clusters -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css"/>
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+ 
+  <!-- Main Scripts -->
+  <script src="config.js" defer></script>
+  <script src="icons.js" defer></script>
+  <script src="toast.js" defer></script>
+  <script src="drawer.js" defer></script>
+  <script src="tools.js" defer></script>
+  <script src="subapasConfig.js" defer></script>
+  <script src="script.js" defer></script>
+  <script src="mobile-bar.js" defer></script>
+ 
+</head>
+
+<body>
+ <header>
+
+     <div class="TitleWithIcon">
+       <h1 class="main-title"> 
+          <i class="fa-solid fa-heart-circle-plus" ></i> دليل الخدمات الطبية - قطاع غزة </h1>
+       <p class="subtitle">  
+        يمكنك العثور على اي خدمة طبية في قطاع غزة بشكل سريع وسهل </p>
+     </div>
+     
+    <!-- Beautiful effects -->
+     <div class="effect-icon" aria-hidden="true">
+       <i class="fa-solid fa-heart-pulse"></i>
+       <i class="fa-solid fa-star-of-life"></i>
+       <i class="fa-solid fa-syringe"></i>
+       <i class="fa-solid fa-hospital"></i>
+       <i class="fa-solid fa-stethoscope"></i>
+       <i class="fa-solid fa-heart-pulse"></i>
+       <i class="fa-solid fa-plus"></i>
+     </div>
+     
+ </header> 
+
+  <!-- Map -->
+  <div id="map"> 
+
+      <!-- Main container for the UI -->
+      <div id="ui-layer">  
+      <div id="coordinates-display">خط العرض: 0.00 | خط الطول: 0.00</div>
+
+      <!-- شريط الموبايل -->
+  <div id="mobile-bar">
+
+  <!-- زر البحث -->
+  <button class="mob-btn" id="mob-search-btn">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+
+  <!-- زر إضافة خدمة -->
+  <a href="form.html" class="mob-btn">
+    <i class="fa-solid fa-plus"></i>
+  </a>
+
+  <!-- زر الفلتر -->
+  <button class="mob-btn" id="mob-filter-btn">
+    <i class="fa-solid fa-sliders"></i>
+  </button>
+
+  <!-- حقل البحث (مخفي افتراضياً) -->
+  <div class="mob-search-box hidden" id="mob-search-box">
+    <input type="text" id="mob-search-input" placeholder="ابحث عن خدمة ..."/>
+    <button id="mob-search-go"><i class="fa-solid fa-arrow-left"></i></button>
+    <div id="mob-search-suggestions" class="search-suggestions hidden"></div>
+  </div>
+
+  <!-- panel الفلتر (مخفي افتراضياً) -->
+  <div class="mob-filter-panel hidden" id="mob-filter-panel">
+    <select id="mob-filter-type" class="mob-select">
+      <option value="">الكل (النوع)</option>
+      <option value="مستشفى رئيسي">مستشفى رئيسي</option>
+      <option value="مستشفى ميداني">مستشفى ميداني</option>
+      <option value="نقطة طبية">نقطة طبية</option>
+    </select>
+    <select id="mob-filter-region" class="mob-select">
+      <option value="">الكل (المنطقة)</option>
+      <option value="شمال غزة">شمال غزة</option>
+      <option value="غزة">غزة</option>
+      <option value="الوسطى">الوسطى</option>
+      <option value="خانيونس">خانيونس</option>
+      <option value="رفح">رفح</option>
+    </select>
+  </div>
+
+  </div>
+
+        <!-- صندوق الإشعارات -->
+        <div id="toast" class="toast hidden"></div>
+
+        <!-- Tabs Row -->
+        <div class="tabs-row">  
+
+          <!-- Search box -->
+          <div class="search-box">
+            <div class="search-container">
+              <input id="search-input" type="text" placeholder="ابحث عن خدمة …" />
+              <div id="search-suggestions" class="search-suggestions hidden"></div>
+            </div>
+            <button id="search-btn" class="search-button"><i class="fa-solid fa-magnifying-glass-location" ></i></button>
+          </div>
+        
+          <!-- زر إضافة خدمة -->
+         
+          <a href="form.html"
+           class="dashboard-btn"
+           id="add-btn">اضافة خدمة  <i class="fa-solid fa-square-plus" ></i></a>
+           
+          
+          <!-- فلاتر -->
+          <select id="filter-type" class="dropdown-select">
+            <option value="">الكل (النوع) </option>
+            <option value="مستشفى رئيسي">مستشفى رئيسي</option>
+            <option value="مستشفى ميداني">مستشفى ميداني</option>
+            <option value="نقطة طبية">نقطة طبية</option>
+          </select>
+
+          <select id="filter-region" class="dropdown-select">
+            <option value="">الكل (المنطقة)</option>
+            <option value="شمال غزة">شمال غزة</option>
+            <option value="غزة">غزة</option>
+            <option value="الوسطى">الوسطى</option>
+            <option value="خانيونس">خانيونس</option>
+            <option value="رفح">رفح</option>
+          </select>
+          
+        <!-- فتح الرابط في علامة تبويب جديدة (صفحة جديدة) -->
+        <a href="https://datastudio.google.com/reporting/32db4b0d-0141-4efd-9fb0-996a26d9d5c4" 
+         class="dashboard-btn"
+         rel="noopener noreferrer">
+           لوحة المعلومات   <i class="fa-solid fa-chart-pie" ></i>
+        </a>
+
+        
+    </div>
+  </div>   <!-- end of map div --> 
+
+
+      <!-- Drawer -->
+<div id="drawer" class="drawer">
+  
+  <!-- زر الإغلاق -->
+  <button class="drawer-close" id="drawer-close">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+
+  <!-- صورة الخدمة -->
+  <div class="drawer-img-wrap">
+    <img id="drawer-img" src="" alt="صورة الخدمة"/>
+    <div class="drawer-img-placeholder" id="drawer-img-placeholder">
+      <i class="fa-solid fa-hospital"></i>
+    </div>
+  </div>
+
+  <!-- تفاصيل الخدمة -->
+  <div class="drawer-body">
+
+    <h2 class="drawer-name" id="drawer-name">—</h2>
+
+    <div class="drawer-row">
+      <i class="fa-solid fa-location-dot"></i>
+      <span id="drawer-area">—</span>
+    </div>
+
+    <div class="drawer-row">
+      <i class="fa-solid fa-house-medical"></i>
+      <span id="drawer-type">—</span>
+    </div>
+
+    <div class="drawer-row">
+      <i class="fa-solid fa-building"></i>
+      <span id="drawer-operator">—</span>
+    </div>
+
+    <div class="drawer-row">
+      <i class="fa-solid fa-user-clock"></i>
+      <span class="drawer-status" id="drawer-status">—</span>
+    </div>
+    
+   
+    <div class="drawer-divider"></div>
+
+    <div class="drawer-actions">
+      <button class="drawer-action-btn" id="drawer-coords-btn">
+        <i class="fa-solid fa-copy"></i>
+        نسخ الإحداثيات
+      </button>
+      <a class="drawer-action-btn" id="drawer-maps-btn" href="#" target="_blank">
+        <i class="fa-solid fa-diamond-turn-right"></i>
+        فتح في الخرائط
+      </a>
+    </div>
+
+  </div>
+  
+</div>
+
+</div>   <!--- map -->
+
+
+
+</body>
+
+</html>
