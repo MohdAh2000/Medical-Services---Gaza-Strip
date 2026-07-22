@@ -698,7 +698,10 @@ i{color:black;}
   }
 }
 
-
+.dashboard-btn i,
+.tabs-row .tab i {
+  color: white !important;
+}
 /* small screens */
 /* ===== TABLET: 800px - 991px ===== */
 @media (min-width: 800px) and (max-width: 991px) {
