@@ -127,6 +127,7 @@ header::before {
 
 .leaflet-control-container {
   z-index: 1300;
+  color: white
 } 
 
 .leaflet-control,
