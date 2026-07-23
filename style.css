@@ -99,7 +99,7 @@ header::before {
   text-align: center;
   color: #e0e0e0;
 }
-/* اتاكد من قصة 90 بكسل هل مضبوطة ولا كيف  */
+
 #map {
   width: 100%;
   height: calc(100vh - 90px);
@@ -117,7 +117,7 @@ header::before {
 }
 
  #ui-layer > * {
-  pointer-events: auto; /* الأزرار والفورم فقط */
+  pointer-events: auto; 
  }   
 
 .leaflet-control-layers {
@@ -127,7 +127,7 @@ header::before {
 
 .leaflet-control-container {
   z-index: 1300;
-  color: white
+  
 } 
 
 .leaflet-control,
@@ -138,7 +138,7 @@ header::before {
   z-index:1000;
 }
 
-/* شريط التابات العلوي */
+
 .tabs-row {
     font-family: "IBM Plex Sans Arabic", sans-serif;
     font-weight: bold;
@@ -158,8 +158,8 @@ header::before {
   font-weight: bold;
   font-style: normal;
   padding: 10px;
-  padding-right: 10px; /* نعمل مساحة إضافية للنص عشان ما يغطي على السهم */
-  padding-left: 35px; /* نعمل مساحة إضافية للنص عشان ما يغطي على السهم */
+  padding-right: 10px; 
+  padding-left: 35px; 
 
   border-radius: 10px;
   background: #0f2854;
@@ -170,16 +170,14 @@ header::before {
   cursor:  pointer;
   text-align: center;
   border:1px; 
-
-  /* نخفي السهم الافتراضي */
+  /* Remove default arrow */
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
 
-  /* نضيف سهم كخلفية */
   background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
   background-repeat: no-repeat;
-  background-position: left 5px center; /* السهم بمسافة 10px عن الحافة اليسار */
+  background-position: left 5px center; 
 }
 .dropdown-select:hover{
   background: #102b5a;
@@ -201,7 +199,7 @@ header::before {
   position: relative;
   display: flex;
   flex-direction: column;
-  flex: 1; /* يأخذ المساحة المتاحة لكن لا يغطي الزر */
+  flex: 1; 
 }
 
 #search-input {
@@ -216,26 +214,26 @@ header::before {
 }
 
 #search-input:focus {
-  outline: none;              /* إزالة الإطار الأسود */
-  border-color: #070707;      /* يمكنك اختيار لون مختلف */
-  /* box-shadow: 0 0 5px rgba(241, 38, 38, 0.5);  تظليل خفيف (اختياري) */
-}
+  outline: none;           
+  border-color: #070707;      
+ }
 
 .search-button{
   padding: 13px 8px;
   border: none;
   background: #0f2854;
   color: #fff;
-  border-radius: 10px 0 0 10px; /* يمين/يسار حسب الاتجاه */
+  border-radius: 10px 0 0 10px; 
   cursor: pointer;
-  flex-shrink: 0; /* منع انكماش الزر */
+  flex-shrink: 0; 
 }
 
 .search-button:hover{
   background: #0f2854ee(8, 8, 8, 0.705)
 }
 
-.dashboard-btn {
+.dashboard-btn ,
+.addService-btn {
   display: inline-block;
   padding: 10px 16px;
   background: #a00e0e;
@@ -248,17 +246,17 @@ header::before {
   transition: background 0.2s;
 }
 
-.dashboard-btn:hover,
-.dashboard-btn:visited,
-.dashboard-btn:active {
+.dashboard-btn:hover, .addService-btn:hover,
+.dashboard-btn:visited, .addService-btn:visited,
+.dashboard-btn:active, .addService-btn:active {
   color: white !important;
 }
 
-.dashboard-btn:hover {
+.dashboard-btn:hover, 
+.addService-btn:hover {
   background: #850b0b;
 }
-
-/* tab icons */
+/* Tab icons */
 .fa-chart-pie, .fa-square-plus {
   color: white;
   padding-right: 3px;
@@ -266,10 +264,9 @@ header::before {
 .fa-magnifying-glass-location, .fa-xmark, .fa-heart-circle-plus{
   color: white;}
 
-/* all icons will be black  */
+
 i{color:black;}
 
-/* قائمة اقتراحات البحث */
 .search-suggestions {
   position: absolute;
   top: 100%;
@@ -288,7 +285,6 @@ i{color:black;}
 .search-suggestions.hidden {
   display: none;
 }
-
 .search-suggestions .suggestion-item {
   padding: 12px 15px;
   cursor: pointer;
@@ -297,26 +293,21 @@ i{color:black;}
   font-size: 13px ;
   color: #464545;
 }
-
 .search-suggestions .suggestion-item:last-child {
   border-bottom: none;
 }
-
 .search-suggestions .suggestion-item:hover {
   background: #f5f5f5;
 }
-
 .search-suggestions .suggestion-item.active-suggestion {
   background: #eaf3ff;
   color: #333;
   font-weight: 800;
 }
-
 .search-suggestions .suggestion-item:active {
   background: #e0e0e0;
 }
 
-/* شكل الأزرار ضمن شريط Leaflet */
 .measure-control a {
   width: 34px;
   height: 34px;
@@ -337,7 +328,7 @@ i{color:black;}
   cursor: crosshair !important;
 }
 
-/* بطاقة المسافة */
+/* distance card */
 .leaflet-tooltip.measure-label {
   background: #c50f0f;
   color: white;
@@ -348,10 +339,7 @@ i{color:black;}
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
-
-
-/* ===== Toast Notification ===== */
-/* ===== Toast ===== */
+/*Toast Notification  */
 .toast {
   position: fixed;
   bottom: 30px;
@@ -367,20 +355,17 @@ i{color:black;}
   overflow: hidden;
   direction: rtl;
 }
-
 .toast.hidden {
   opacity: 0;
   pointer-events: none;
   transform: translateX(-50%) translateY(12px);
 }
 
-/* الحاوية الداخلية */
 .toast-inner {
   position: relative;
   padding: 12px 12px 12px;
 }
 
-/* زر الإغلاق */
 .toast-close {
   position: absolute;
   top: 6px;
@@ -394,7 +379,6 @@ i{color:black;}
 }
 .toast-close:hover { color: #333; }
 
-/* الجسم */
 .toast-body {
   display: flex;
   align-items: center;
@@ -409,7 +393,6 @@ i{color:black;}
   font-family: "Zain", sans-serif;
 }
 
-/* الأيقونة */
 .toast-icon {
   width: 22px;
   height: 22px;
@@ -435,7 +418,7 @@ i{color:black;}
   to   { transform: rotate(360deg); }
 }
 
-/* الشريط السفلي */
+
 .toast-bar {
   height: 3px;
   margin-top: 10px;
@@ -451,12 +434,13 @@ i{color:black;}
   to   { width: 0%; }
 }
 
-/* حد جانبي حسب النوع */
 .toast.success { border-right: 4px solid #2ecc71; }
 .toast.error   { border-right: 4px solid #e74c3c; }
 .toast.loading { border-right: 4px solid #f39c12; }
 
-/* ===== تنسيق Popup الصور ===== */
+
+/* popup as drawer */
+
 .popup-content {
   text-align: center;
   min-width: 100px;
@@ -493,7 +477,6 @@ i{color:black;}
   border: 2px solid #f0f0f0;
 }
 
-/* تحسين Leaflet Popup */
 .leaflet-popup-content-wrapper {
   background:#e8eff0da !important;
   border-radius: 12px;
@@ -518,27 +501,24 @@ i{color:black;}
 }
 
 /* clusters  */
-/* 1. للمجموعات الصغيرة (التي تظهر باللون الأخضر افتراضياً) */
 .marker-cluster-small {
-  background-color: rgba(160, 14, 14, 0.4) !important; /* اللون الشفاف الخارجي (أحمر كمثال) */
+  background-color: rgba(160, 14, 14, 0.4) !important; 
 }
 .marker-cluster-small div {
-  background-color: #a00e0e !important; /* الدائرة الداخلية المصمتة */
-  color: white !important; /* لون رقم العداد داخل الدائرة */
+  background-color: #a00e0e !important; 
+  color: white !important; 
 }
 
-/* 2. للمجموعات المتوسطة (التي تظهر باللون الأصفر افتراضياً) */
 .marker-cluster-medium {
-  background-color: rgba(11, 34, 64, 0.4) !important; /* لون كحلي شفاف كمثال */
+  background-color: rgba(11, 34, 64, 0.4) !important; 
 }
 .marker-cluster-medium div {
   background-color: rgba(11, 34, 64, 0.8) !important;
   color: white !important;
 }
 
-/* 3. للمجموعات الكبيرة (التي تظهر باللون البرتقالي افتراضياً) */
 .marker-cluster-large {
-  background-color: rgba(0, 0, 0, 0.4) !important; /* لون أسود شفاف كمثال */
+  background-color: rgba(0, 0, 0, 0.4) !important; 
 }
 .marker-cluster-large div {
   background-color: rgba(0, 0, 0, 0.8) !important;
@@ -548,9 +528,9 @@ i{color:black;}
 #coordinates-display {
   position: absolute;
   bottom: 20px;
-  right: 10px; /* تظهر أسفل اليمين لتبتعد عن مقياس الرسم الموجود أسفل اليسار */
-  z-index: 1000; /* تضمن ظهورها فوق طبقات الخريطة */
-  background: rgba(255, 255, 255, 0.9); /* خلفية بيضاء شفافة لتناسب أداة المقياس */
+  right: 10px;
+  z-index: 1000; 
+  background: rgba(255, 255, 255, 0.9); 
   padding: 4px 8px;
   font-size: 11px;
   color: #333;
@@ -559,8 +539,7 @@ i{color:black;}
   box-shadow: 0 1px 5px rgba(0,0,0,0.4);
 }
 
-/* حول الموقع */
-/* حاوية الخلفية المظلمة للمودال */
+/* about */
 .website-info-overlay {
   position: fixed;
   top: 0;
@@ -573,8 +552,6 @@ i{color:black;}
   justify-content: center;
   z-index: 100000;
 }
-
-/* نافذة المودال الرئيسية */
 .website-info-modal {
   width: min(92vw, 420px);
   background: linear-gradient(135deg, #ffffff 0%, #f7f9fc 100%);
@@ -587,7 +564,6 @@ i{color:black;}
   border: 1px solid #e7ebf0;
 }
 
-/* زر الإغلاق */
 .website-info-close-btn {
   position: absolute;
   top: 10px;
@@ -614,14 +590,12 @@ i{color:black;}
   transform: scale(0.95);
 }
 
-/* عنوان المودال */
 .website-info-title {
   margin: 0 0 12px;
   color: #0F2854;
   font-size: 1.1rem;
 }
 
-/* البطاقات المشتركة داخل المودال */
 .website-info-card {
   border-radius: 12px;
   padding: 12px;
@@ -633,7 +607,6 @@ i{color:black;}
   color: #2f3a4a;
 }
 
-/* ألوان مخصصة لكل بطاقة */
 .website-info-card-blue {
   background: #f8fbff;
   border: 1px solid #e4ebf5;
@@ -647,8 +620,9 @@ i{color:black;}
 .website-info-card-green {
   background: #f7fff8;
   border: 1px solid #d8ead8;
-  margin-bottom: 0; /* البطاقة الأخيرة لا تحتاج لهامش سفلي */
+  margin-bottom: 0;
 }
+
 .website-info-overlay {
   position: fixed;
   top: 0;
@@ -672,7 +646,6 @@ i{color:black;}
   animation: fadeInOverlay 0.25s ease-out forwards;
 }
 
-/* حركة ظهور تدريجية ناعمة للخلفية */
 @keyframes fadeInOverlay {
   from {
     opacity: 0;
@@ -682,9 +655,8 @@ i{color:black;}
   }
 }
 
-/* حركة دخول لطيفة للمودال (انزلاق للأعلى مع تكبير بسيط) */
 .website-info-modal {
-  /* ... نفس تنسيقاتك السابقة ... */
+ 
   animation: slideUpModal 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
@@ -699,10 +671,7 @@ i{color:black;}
   }
 }
 
-.dashboard-btn i,
-.tabs-row .tab i {
-  color: white !important;
-}
+
 /* small screens */
 /* ===== TABLET: 800px - 991px ===== */
 @media (min-width: 800px) and (max-width: 991px) {

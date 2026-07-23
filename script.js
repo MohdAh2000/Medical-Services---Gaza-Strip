@@ -1,5 +1,5 @@
 
-// منع تناثر الأحداث فقط عندما النقر داخل عناصر واجهة المستخدم التفاعلية
+// prevent map interaction when clicking on UI elements
 const uiLayer = document.getElementById("ui-layer");
 
 if (uiLayer) {
@@ -11,29 +11,27 @@ if (uiLayer) {
     }
   };
 
-  // إيقاف التفاعل مع الخريطة عند النقر داخل عناصر واجهة المستخدم
   uiLayer.addEventListener('click', stopMapInteraction);
-
-  // إيقاف تكبير/تصغير الخريطة عند النقر المزدوج داخل الحقول التفاعلية
   uiLayer.addEventListener('dblclick', stopMapInteraction);
 
-  // عند التمرير بالماوس فوق الحقول الإدخالية، منع تمرير الخريطة
+  // تم إضافة { passive: false } هنا لإعلام المتصفح ومحاذاة السلوك برمجياً
   uiLayer.addEventListener('wheel', (e) => {
     if (e.target.closest && e.target.closest('input, select, textarea')) {
       e.stopPropagation();
     }
-  });
+  }, { passive: false });
 }
 
-// هان كل الاعتماد عليها فلازم اركز شوي معها هي عبارة عن ارراي مجهزة لاستقبال الداتا 
+
+// All services data fetched from Supabase
 let allServices = [];
 
-//temporary layers for showing nearest-service visuals
+// Temporary layers for showing nearest-service visuals
 let nearestLine = null;
 let nearestBuffer = null;
 let nearestDistanceLabel = null;
 
-// Function to clear nearest service visuals (called when user marker is removed)
+// Clear nearest service visuals 
 window.clearNearestVisuals = function() {
   if (nearestLine) { 
     map.removeLayer(nearestLine); 
@@ -65,34 +63,26 @@ function attachTempMarkerCloseHandler(marker) {
 }
 
 
-// طبقة مخصصة لجميع الخدمات
 const servicesLayer = L.layerGroup().addTo(map);
 
-// جلب البيانات من سوبا
+// Get services from Supabase 
 async function loadServicesFromSupabase() {
   const { data, error } = await sb
     .from("medicalServices") 
     .select("id, name, type, area, status, operator, image_url, geom")
-    .eq("ServiceStatus", "Approved"); // جلب فقط الخدمات الموافق عليها
-
+    .eq("ServiceStatus", "Approved"); 
   if (error) {
     console.error("خطأ أثناء جلب البيانات:", error);
     return;
   }
 
-  // التحقق من البيانات (للتشخيص)
-  if (data && data.length > 0) {
-    console.log("عينة من البيانات:", data[0]);
-  }
-
-  allServices = data;          // حفظ كل الخدمات
+  allServices = data;         
   drawServicesOnMap(allServices);
 }
 
-// متغير التحكم
-let useCluster = true; // يبدا العرض بالتجمعات
+// Cluster Group
+let useCluster = true; 
 
-// طبقتا العرض
 const clusterGroup = L.markerClusterGroup({
   showCoverageOnHover: false,
   maxClusterRadius: 40,
@@ -100,11 +90,9 @@ const clusterGroup = L.markerClusterGroup({
 });
 
 function drawServicesOnMap(services) {
-  // مسح الطبقتين
   servicesLayer.clearLayers();
   clusterGroup.clearLayers();
 
-  // إضافة/إزالة الطبقة المناسبة
   if (useCluster) {
     map.addLayer(clusterGroup);
     map.removeLayer(servicesLayer);
@@ -113,7 +101,6 @@ function drawServicesOnMap(services) {
     map.removeLayer(clusterGroup);
   }
 
-  // رسم النقاط على الطبقة المختارة
   services.forEach(service => {
     if (!service.geom) return;
     const geojson = service.geom;
@@ -128,7 +115,6 @@ function drawServicesOnMap(services) {
       }
     });
 
-    // إضافة للطبقة المناسبة فقط
     useCluster
       ? clusterGroup.addLayer(geoLayer)
       : geoLayer.addTo(servicesLayer);
@@ -138,9 +124,7 @@ function drawServicesOnMap(services) {
 loadServicesFromSupabase();
 
 
-// ============= وظيفة البحث عن الخدمات =============
-
-// دالة البحث عن خدمة
+// Search services
 function searchService(searchText) {
   if (!searchText || searchText.trim() === "") {
     showToast(" الرجاء إدخال اسم الخدمة", "error",1500);
@@ -149,7 +133,6 @@ function searchService(searchText) {
 
   const searchTerm = searchText.trim().toLowerCase();
   
-  // البحث في allServices (مطابقة جزئية)
   const foundService = allServices.find(service => {
     if (!service.name) return false;
     return service.name.toLowerCase().includes(searchTerm);
@@ -160,37 +143,33 @@ function searchService(searchText) {
     return;
   }
 
-  // التوجيه إلى الخدمة
   goToService(foundService);
 }
 
-// دالة استخراج الإحداثيات من GeoJSON (متوافقة مع PostGIS)
+// Extract coordinates from GeoJSON 
 function extractCoordinatesFromGeoJSON(geojson) {
-  // PostGIS قد يعيد أنواع مختلفة من GeoJSON
   let geometry = null;
   
   if (geojson.type === "Point") {
-    // GeoJSON Point مباشرة
-    return geojson.coordinates; // [lng, lat]
+    return geojson.coordinates; 
   } else if (geojson.type === "Feature") {
-    // GeoJSON Feature
+    
     geometry = geojson.geometry;
   } else if (geojson.type === "FeatureCollection" && geojson.features && geojson.features.length > 0) {
-    // GeoJSON FeatureCollection - نأخذ أول feature
+
     geometry = geojson.features[0].geometry;
   } else if (geojson.geometry) {
-    // قد يكون geometry مدمج مباشرة
+
     geometry = geojson.geometry;
   }
   
   if (geometry && geometry.type === "Point") {
-    return geometry.coordinates; // [lng, lat]
+    return geometry.coordinates; 
   }
   
   return null;
 }
 
-// دالة التوجيه إلى الخدمة على الخريطة (متوافقة مع PostGIS)
 function goToService(service) {
   if (!service.geom) {
     showToast(" لا توجد إحداثيات لهذه الخدمة", "error");
@@ -199,35 +178,30 @@ function goToService(service) {
 
   try {
     const geojson = service.geom;
-    
-    // استخراج الإحداثيات من GeoJSON (متوافق مع PostGIS)
     const coordinates = extractCoordinatesFromGeoJSON(geojson);
     
     if (!coordinates || coordinates.length < 2) {
       showToast("نوع بيانات مكانية غير مدعوم", "error");
       return;
     }
-    
+  
     const [lng, lat] = coordinates;
 
-    // التوجيه إلى الموقع مع تكبير مناسب
     map.setView([lat, lng], 16);
 
-    // استخدام المرجع المحفوظ مباشرة (بدون بحث معقد)
+    // Saved marker
     if (service.marker) {
-      // فتح popup مباشرة باستخدام المرجع
       setTimeout(() => {
        openDrawer(service);
 
-      }, 300); // تأخير بسيط لضمان اكتمال التوجيه
+      }, 300); 
     } else {
-      // في حالة عدم وجود المرجع، نبحث في servicesLayer
+      
       servicesLayer.eachLayer((layer) => {
         if (layer instanceof L.Marker) {
           const markerLat = layer.getLatLng().lat;
           const markerLng = layer.getLatLng().lng;
           
-          // مقارنة الإحداثيات (مع هامش صغير للأخطاء العائمة)
           if (Math.abs(markerLat - lat) < 0.0001 && Math.abs(markerLng - lng) < 0.0001) {
             layer.openPopup();
           }
@@ -244,116 +218,108 @@ function goToService(service) {
   }
 }
 
-// دالة إيجاد أقرب خدمة بالنسبة لموقع المستخدم أو مركز الخريطة
-function findNearestService() {
-  if (!allServices || allServices.length === 0) {
-    showToast(" لا توجد خدمات متاحة للتحليل", "error");
-    return;
-  }
-
-  // يجب أن يحدد المستخدم موقعه أولاً (من زر تحديد الموقع مثلاً)
+// Closest facility
+async function findNearestService() {
+   
   if (!userMarker) {
-    showToast(" حدد موقعك أولاً ثم اعد المحاولة   ", "error");
+    showToast("حدد موقعك أولاً ثم أعد المحاولة", "error");
     return;
   }
 
-  // نستخدم موقع المستخدم كنقطة مرجعية
   const referenceLatLng = userMarker.getLatLng();
 
-     let nearestService = null;
-  let minDistance = Infinity;
-
-  allServices.forEach((service) => {
-    if (!service.geom) return;
-
-    try {
-      const geojson = service.geom;
-      const coordinates = extractCoordinatesFromGeoJSON(geojson);
-      if (!coordinates || coordinates.length < 2) return;
-
-      const [lng, lat] = coordinates;
-      const serviceLatLng = L.latLng(lat, lng);
-
-      const distance = referenceLatLng.distanceTo(serviceLatLng); // بالمتر
-
-      if (distance < minDistance) {
-        minDistance = distance;
-        nearestService = service;
-      }
-    } catch (err) {
-      console.error("خطأ أثناء حساب المسافة لأحد الخدمات:", err);
-    }
+  // PostGIS function 
+  const { data, error } = await sb.rpc("find_nearest_service", {
+    user_lat: referenceLatLng.lat,
+    user_lng: referenceLatLng.lng
   });
 
-  if (!nearestService) {
-    showToast(" لم يتم العثور على خدمات مكانية صالحة", "error");
+  if (error) {
+    console.error(error);
+    showToast("حدث خطأ أثناء البحث عن أقرب خدمة", "error");
     return;
   }
 
-  // رسم مرئي بين موقع المستخدم والمؤسسة الأقرب لزيادة الثقة
+  if (!data || data.length === 0) {
+    showToast("لم يتم العثور على خدمات معتمدة", "error");
+    return;
+  }
+  const nearestResult = data[0];
+
+  const nearestService = allServices.find(
+    s => String(s.id) === String(nearestResult.id)
+  );
+
+  if (!nearestService) {
+    showToast("تعذر مطابقة الخدمة على الخريطة", "error");
+    return;
+  }
+
+  const minDistance = nearestResult.distance_meters;
+
   try {
     const geojson = nearestService.geom;
     const coords = extractCoordinatesFromGeoJSON(geojson);
+
+    if (!coords || coords.length < 2) {
+      showToast("بيانات الموقع غير صالحة", "error");
+      return;
+    }
+
     const [svcLng, svcLat] = coords;
     const serviceLatLng = L.latLng(svcLat, svcLng);
 
-    // إزاله أي رسومات سابقة
-    if (nearestLine) { map.removeLayer(nearestLine); nearestLine = null; }
-    if (nearestBuffer) { map.removeLayer(nearestBuffer); nearestBuffer = null; }
-    if (nearestDistanceLabel) { map.removeLayer(nearestDistanceLabel); nearestDistanceLabel = null; }
+    if (nearestLine) {
+      map.removeLayer(nearestLine);
+      nearestLine = null;
+    }
 
-    // خط بين النقطتين
-    // nearestLine = L.polyline([referenceLatLng, serviceLatLng], { color: '#a00e0e', weight: 3, opacity: 0.9 }).addTo(map);
+    if (nearestBuffer) {
+      map.removeLayer(nearestBuffer);
+      nearestBuffer = null;
+    }
 
-    // دائرة (buffer) حول موقع المستخدم تمتد حتى أقرب خدمة
+    if (nearestDistanceLabel) {
+      map.removeLayer(nearestDistanceLabel);
+      nearestDistanceLabel = null;
+    }
+
     nearestBuffer = L.circle(referenceLatLng, {
       radius: minDistance,
-      color: '#000000 ',
+      color: '#000000',
       dashArray: '6,6',
-      fillColor: '#ff0000 ',
+      fillColor: '#ff0000',
       fillOpacity: 0.08,
       weight: 2,
     }).addTo(map);
 
-    // تسمية المسافة في منتصف الخط
-    const mid = L.latLng((referenceLatLng.lat + serviceLatLng.lat) / 2, (referenceLatLng.lng + serviceLatLng.lng) / 2);
-    const distanceText = minDistance >= 1000 ? (minDistance / 1000).toFixed(2) + ' كم' : minDistance.toFixed(0) + ' متر';
-    // nearestDistanceLabel = L.marker(mid, { interactive: false }).addTo(map)
-    //   .bindTooltip(distanceText, { permanent: true, direction: 'center', className: 'nearest-distance-label' })
-    //   .openTooltip();
+    const distanceText = minDistance >= 1000
+      ? (minDistance / 1000).toFixed(2) + ' كم'
+      : minDistance.toFixed(0) + ' متر';
 
-    // ضبط مجال العرض ليشمل كل من المستخدم والخدمة
-    
     const bounds = L.latLngBounds([referenceLatLng, serviceLatLng]);
-    map.fitBounds(bounds.pad ? bounds.pad(0.2) : bounds.extend(bounds).pad ? bounds.pad(0.2) : bounds, { padding: [60, 60] });
+    map.fitBounds(bounds.pad(0.2), { padding: [60, 60] });
 
+    // reset filters to prevent conflict
     resetFilters();
 
-    // فتح بوب أب للخدمة بعد ضبط العرض
     if (nearestService.marker) {
-      setTimeout(() => openDrawer(nearestService), 500);
-    } else {
-      servicesLayer.eachLayer((layer) => {
-        if (layer instanceof L.Marker) {
-          const markerLat = layer.getLatLng().lat;
-          const markerLng = layer.getLatLng().lng;
-          if (Math.abs(markerLat - svcLat) < 0.0001 && Math.abs(markerLng - svcLng) < 0.0001) {
-            setTimeout(() => openDrawer(layer.service), 500);
-          }
-        }
-      });
+      setTimeout(() => {
+        openDrawer(nearestService);
+      }, 500);
     }
 
-    showToast(` أقرب خدمة: ${nearestService.name} ( ${distanceText} )`, "success");
+    showToast(
+      `أقرب خدمة: ${nearestService.name} (${distanceText})`,
+      "success"
+    );
+
   } catch (err) {
-    console.error('خطأ أثناء رسم المسار/المنطقة:', err);
-    goToService(nearestService); // fallback
+    console.error('خطأ أثناء رسم المنطقة:', err);
+    goToService(nearestService); 
   }
 }
-
-// ============= قائمة اقتراحات البحث =============
-
-// دالة البحث عن اقتراحات (أول 3 نتائج)
+// Suggestions  
 function getSearchSuggestions(searchText) {
   if (!searchText || searchText.trim() === "") {
     return [];
@@ -361,13 +327,13 @@ function getSearchSuggestions(searchText) {
 
   const searchTerm = searchText.trim().toLowerCase();
   
-  // البحث في allServices (مطابقة جزئية) - أول 3 نتائج
+//  Search in allServices
   const suggestions = allServices
     .filter(service => {
       if (!service.name) return false;
       return service.name.toLowerCase().includes(searchTerm);
     })
-    .slice(0, 3); // حد أقصى 3 اقتراحات
+    .slice(0, 3); 
 
   return suggestions;
 }
@@ -413,7 +379,7 @@ function selectActiveSuggestion() {
   return true;
 }
 
-// دالة عرض الاقتراحات
+// display suggestions
 function showSuggestions(suggestions, targetContainer = document.getElementById("search-suggestions"), searchField = searchInput) {
   if (!targetContainer) return;
 
@@ -446,7 +412,6 @@ function showSuggestions(suggestions, targetContainer = document.getElementById(
   targetContainer.classList.remove("hidden");
 }
 
-// ربط زر البحث وحقل البحث
 const searchBtn = document.getElementById("search-btn");
 const searchInput = document.getElementById("search-input");
 const suggestionsContainer = document.getElementById("search-suggestions");
@@ -507,15 +472,11 @@ if (searchBtn && searchInput) {
   });
 }
 
-
-
-// ============= الفلترة حسب النوع والمنطقة =============
-
+// Filters
 function applyFilters() {
   const typeValue = document.getElementById("filter-type").value;
   const areaValue = document.getElementById("filter-region").value;
 
-  // فلترة الخدمات حسب النوع والمنطقة
   const filtered = allServices.filter(service => {
     const matchType = typeValue === "" || service.type === typeValue;
     const matchArea = areaValue === "" || service.area === areaValue;
@@ -524,7 +485,7 @@ function applyFilters() {
 
   drawServicesOnMap(filtered);
 }
-// back the thing to the default state
+// Reset filters
 function resetFilters() {
   const typeSelect = document.getElementById("filter-type");
   const areaSelect = document.getElementById("filter-region");
@@ -542,7 +503,7 @@ if (filterType && filterRegion) {
   filterRegion.addEventListener("change", applyFilters);
 }
 
-// في script.js أضف للموبايل
+// filer for mobile
 const mobFilterType   = document.getElementById("mob-filter-type");
 const mobFilterRegion = document.getElementById("mob-filter-region");
 
@@ -560,7 +521,7 @@ function applyMobileFilters() {
   drawServicesOnMap(filtered);
 }
 
-// ==================== دالة تحويل البيانات إلى صيغة الخريطة الحرارية ====================
+// Heatmap
 function convertServicesToHeatPoints() {
   const heatPoints = [];
 
@@ -575,9 +536,8 @@ function convertServicesToHeatPoints() {
       const geojson = service.geom;
       let coordinates = null;
 
-      // استخراج الإحداثيات من GeoJSON بصيغ مختلفة
       if (geojson.type === "Point") {
-        coordinates = geojson.coordinates; // [lng, lat]
+        coordinates = geojson.coordinates; 
       } else if (geojson.type === "Feature" && geojson.geometry) {
         if (geojson.geometry.type === "Point") {
           coordinates = geojson.geometry.coordinates;
@@ -592,8 +552,6 @@ function convertServicesToHeatPoints() {
 
       if (coordinates && coordinates.length >= 2) {
         const [lng, lat] = coordinates;
-        // صيغة L.heatLayer: [lat, lng, intensity]
-        // الـ intensity = 1.0 (قيمة ثابتة يمكن تعديلها حسب الحاجة)
         heatPoints.push([lat, lng, 1.0]);
       }
     } catch (err) {
@@ -604,30 +562,23 @@ function convertServicesToHeatPoints() {
   return heatPoints;
 }
 
-
-
-// ==================== دالة تبديل الخريطة الحرارية ====================
 function toggleHeatMap(btn) {
   const heatBtn = btn || document.getElementById("heat-btn");
 
   if (heatMapActive) {
-    // إيقاف الخريطة الحرارية
     if (heatMapLayer) {
       map.removeLayer(heatMapLayer);
       heatMapLayer = null;
     }
 
-    // إعادة عرض نقاط الخدمات إذا كانت مخفية
     if (servicesLayer && !map.hasLayer(servicesLayer)) {
       map.addLayer(servicesLayer);
     }
-    // إعادة العرض حسب حالة الـ cluster
       if (useCluster) {
        map.addLayer(clusterGroup);
       } else {
      map.addLayer(servicesLayer);
 }
-
     heatMapActive = false;
     if (heatBtn) {
       heatBtn.style.backgroundColor = "";
@@ -636,7 +587,6 @@ function toggleHeatMap(btn) {
     showToast(" تم إيقاف الخريطة الحرارية",  "success",1500);
    
   } else {
-    // تشغيل الخريطة الحرارية
     if (!allServices || allServices.length === 0) {
       showToast(" لا توجد خدمات لعرضها على الخريطة الحرارية", "error");
       return;
@@ -648,15 +598,12 @@ function toggleHeatMap(btn) {
       showToast(" لم يتم العثور على نقاط صحيحة", "error");
       return;
     }
-   // إخفاء طبقة العرض الحالية
     if (useCluster) {
       if (map.hasLayer(clusterGroup)) map.removeLayer(clusterGroup);
     } else {
       if (map.hasLayer(servicesLayer)) map.removeLayer(servicesLayer);
     }
    
-
-    // إنشاء طبقة الخريطة الحرارية
     heatMapLayer = L.heatLayer(heatPoints, {
       radius: 30,
       blur: 25,
@@ -680,26 +627,20 @@ function toggleHeatMap(btn) {
     showToast(` تم تفعيل الخريطة الحرارية `, "success",1500);
   }
 }
-// 1. تحديد العنصر الذي سيعرض الإحداثيات من الـ HTML
+// Cordinates display
 const coordsDiv = document.getElementById('coordinates-display');
 
-// 2. الاستماع لحركة الماوس على الخريطة وتحديث النص
 map.on('mousemove', function(e) {
-  const lat = e.latlng.lat.toFixed(5); // جلب خط العرض وتقريبه لـ 5 أرقام عشرية لدقة احترافية
-  const lng = e.latlng.lng.toFixed(5); // جلب خط الطول وتقريبه لـ 5 أرقام عشرية
+  const lat = e.latlng.lat.toFixed(5); 
+  const lng = e.latlng.lng.toFixed(5); 
   
-  // تحديث النص داخل الحاوية
   coordsDiv.innerHTML = ` خط الطول: ${lng} | خط العرض: ${lat} `;
 });
 
-// const searchBtn = document.getElementById('search-btn');
-// const searchInput = document.getElementById('search-input');
-
-// على الموبايل فقط
+// mobile
 if (window.innerWidth <= 768) {
   searchBtn.addEventListener('click', (e) => {
 
-    // إذا الحقل مغلق — افتحه فقط
     if (!searchInput.classList.contains('expanded')) {
       e.stopPropagation();
       searchInput.classList.add('expanded');
@@ -707,12 +648,10 @@ if (window.innerWidth <= 768) {
       return;
     }
 
-    // إذا الحقل مفتوح — نفذ البحث
     searchService(searchInput.value);
     suggestionsContainer.classList.add('hidden');
   });
 
-  // إغلاق الحقل عند النقر خارجه
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.search-box')) {
       searchInput.classList.remove('expanded');
